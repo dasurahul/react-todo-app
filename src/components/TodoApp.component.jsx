@@ -44,6 +44,9 @@ class TodoApp extends React.Component {
           {this.state.todos.map((todo, index) => {
             return <TodoItem key={index} todo={todo} />;
           })}
+          {this.state.todos.length === 0 && (
+            <div className="center">Nothing</div>
+          )}
         </div>
       </React.Fragment>
     );
