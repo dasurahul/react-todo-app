@@ -15,29 +15,16 @@ class TodoApp extends React.Component {
       description: "",
     };
   }
-  nameHandler = (event) => {
-    this.setState({
-      name: event.target.value,
-    });
-  };
-  descriptionHandler = (event) => {
-    this.setState({
-      description: event.target.value,
-    });
+  componentDidUpdate() {
+    axios
+      .get("http://localhost:3000/show-todos")
+      .then((res) => this.setState({ todos: res.data }));
+  }
+  handleChange = (event) => {
+    const { name, value } = event.target;
+    this.setState({ [name]: value });
   };
   addTodo = () => {
-    this.setState((state) => {
-      return {
-        ...state,
-        todos: [
-          ...state.todos,
-          {
-            todoName: this.state.name,
-            todoDescription: this.state.description,
-          },
-        ],
-      };
-    });
     axios
       .post("http://localhost:3000/add-todo", {
         todoName: this.state.name,
@@ -51,19 +38,22 @@ class TodoApp extends React.Component {
       });
   };
   render() {
+    console.log(this.state.todos);
     return (
       <React.Fragment>
         <div className="add-todo">
           <input
+            name="name"
             type="text"
             placeholder="Add Name"
-            onChange={this.nameHandler}
+            onChange={this.handleChange}
             value={this.state.name}
           />
           <input
+            name="description"
             type="text"
             placeholder="Add Description"
-            onChange={this.descriptionHandler}
+            onChange={this.handleChange}
             value={this.state.description}
           />
           <button onClick={this.addTodo}>Add Todo</button>
