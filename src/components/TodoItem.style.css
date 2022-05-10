@@ -1,5 +1,6 @@
 .todo {
   margin-bottom: 1rem;
+  position: relative;
 }
 
 .flex {
@@ -12,4 +13,9 @@
 
 .gap-small {
   gap: 0.5rem;
+}
+
+.todo button {
+  position: absolute;
+  right: 0;
 }
