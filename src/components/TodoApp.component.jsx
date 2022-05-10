@@ -29,6 +29,7 @@ class TodoApp extends React.Component {
       .post("http://localhost:3000/add-todo", {
         todoName: this.state.name,
         todoDescription: this.state.description,
+        id: Math.random(),
       })
       .then((response) => {
         console.log(response);
@@ -60,7 +61,14 @@ class TodoApp extends React.Component {
         </div>
         <div className="todos">
           {this.state.todos.map((todo, index) => {
-            return <TodoItem key={index} todo={todo} />;
+            return (
+              <TodoItem
+                key={index}
+                todo={todo}
+                name={this.state.name}
+                description={this.state.description}
+              />
+            );
           })}
           {this.state.todos.length === 0 && (
             <div className="center">Nothing</div>
