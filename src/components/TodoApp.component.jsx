@@ -1,34 +1,45 @@
-import React from "react";
-
-import "./TodoApp.style.css";
+import React, { useState, useEffect } from "react";
 
 import TodoItem from "./TodoItem.component";
 
 import axios from "axios";
 
-class TodoApp extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      todos: [],
-      name: "",
-      description: "",
-    };
-  }
-  componentDidUpdate() {
+import { Form, Button, ListGroup } from "react-bootstrap";
+
+const TodoApp = () => {
+  const [input, setInput] = useState({ name: "", description: "" });
+  const [todos, setTodos] = useState([]);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setInput((input) => {
+      return {
+        ...input,
+        [name]: value,
+      };
+    });
+  };
+
+  const getData = () => {
     axios
       .get("http://localhost:3000/show-todos")
-      .then((res) => this.setState({ todos: res.data }));
-  }
-  handleChange = (event) => {
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
+      .then((response) => setTodos(response.data));
   };
-  addTodo = () => {
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  useEffect(() => {
+    getData();
+  });
+
+  const addTodo = () => {
     axios
       .post("http://localhost:3000/add-todo", {
-        todoName: this.state.name,
-        todoDescription: this.state.description,
+        todoName: input.name,
+        todoDescription: input.description,
         id: Math.random(),
       })
       .then((response) => {
@@ -38,45 +49,46 @@ class TodoApp extends React.Component {
         console.log(error);
       });
   };
-  render() {
-    console.log(this.state.todos);
-    return (
-      <React.Fragment>
-        <div className="add-todo">
-          <input
+
+  return (
+    <React.Fragment>
+      <Form>
+        <Form.Group className="mb-3">
+          <Form.Label>Add Name</Form.Label>
+          <Form.Control
             name="name"
             type="text"
-            placeholder="Add Name"
-            onChange={this.handleChange}
-            value={this.state.name}
+            placeholder="Name"
+            onChange={handleChange}
+            value={input.name}
           />
-          <input
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Add Description</Form.Label>
+          <Form.Control
             name="description"
             type="text"
-            placeholder="Add Description"
-            onChange={this.handleChange}
-            value={this.state.description}
+            placeholder="Description"
+            onChange={handleChange}
+            value={input.description}
           />
-          <button onClick={this.addTodo}>Add Todo</button>
-        </div>
-        <div className="todos">
-          {this.state.todos.map((todo, index) => {
-            return (
-              <TodoItem
-                key={index}
-                todo={todo}
-                name={this.state.name}
-                description={this.state.description}
-              />
-            );
-          })}
-          {this.state.todos.length === 0 && (
-            <div className="center">Nothing</div>
-          )}
-        </div>
-      </React.Fragment>
-    );
-  }
-}
+        </Form.Group>
+        <Button onClick={addTodo} className="mb-3">
+          Add Todo
+        </Button>
+      </Form>
+      <ListGroup className="todos">
+        {todos.map((todo, index) => {
+          return (
+            <ListGroup.Item key={index}>
+              <TodoItem todo={todo} />
+            </ListGroup.Item>
+          );
+        })}
+        {todos.length === 0 && <div className="text-center">Nothing</div>}
+      </ListGroup>
+    </React.Fragment>
+  );
+};
 
 export default TodoApp;

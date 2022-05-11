@@ -1,13 +1,13 @@
-import "./App.css";
-
 import TodoApp from "./components/TodoApp.component";
+
+import { Container } from "react-bootstrap";
 
 const App = () => {
   return (
-    <div className="container">
-      <h1>Todo App</h1>
+    <Container>
+      <h1 className="text-center">Todo App</h1>
       <TodoApp />
-    </div>
+    </Container>
   );
 };
 
